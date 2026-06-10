@@ -73,7 +73,7 @@ export default function App() {
       });
       const data = await res.json();
       setMessages(prev => [...prev, {
-        role: "assistant", text: data.answer, sources: data.sources
+        role: "assistant", text: data.answer, sources: data.sources, sourceType: data.source_type
       }]);
     } catch {
       setMessages(prev => [...prev, {
@@ -295,9 +295,11 @@ export default function App() {
                   <div style={{
                     marginTop: "8px", paddingTop: "8px",
                     borderTop: "1px solid rgba(255,255,255,0.1)",
-                    fontSize: "11px", color: "#64748B"
+                    fontSize: "11px", color: msg.sourceType === "web" ? "#E07B39" : "#64748B"
                   }}>
-                    📌 {msg.sources} source chunks retrieved
+                    {msg.sourceType === "web"
+                      ? `🌐 Not found in document — answered from live web (${msg.sources} sources)`
+                      : `📌 ${msg.sources} source chunks retrieved from document`}
                   </div>
                 )}
               </div>
