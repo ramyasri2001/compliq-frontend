@@ -121,11 +121,19 @@ export default function App() {
             cursor: "pointer", transition: "all 0.2s",
             background: file ? "rgba(37,99,235,0.05)" : "transparent"
           }}>
-            <div style={{ fontSize: "28px" }}>📄</div>
+            <div style={{ fontSize: "28px" }}>
+  {file ? (
+    file.name.match(/\.(jpg|jpeg|png|webp)$/i) ? "🖼️" :
+    file.name.match(/\.xlsx?$/i) ? "📊" :
+    file.name.match(/\.pptx?$/i) ? "📑" :
+    file.name.match(/\.docx?$/i) ? "📝" :
+    "📄"
+  ) : "📁"}
+</div>
             <div style={{ fontSize: "13px", color: file ? "#93C5FD" : "#64748B", textAlign: "center" }}>
-              {file ? file.name : "Click to select PDF"}
+              {file ? file.name : "Click to select document"}
             </div>
-            <input type="file" accept=".pdf" style={{ display: "none" }}
+            <input type="file" accept=".pdf,.docx,.xlsx,.xls,.pptx,.csv,.txt,.md,.jpg,.jpeg,.png,.webp" style={{ display: "none" }}
               onChange={e => setFile(e.target.files[0])} />
           </label>
 
