@@ -1,6 +1,98 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
+function SplashScreen() {
+  return (
+    <div style={{
+      position: "fixed", top: 0, left: 0,
+      width: "100vw", height: "100vh",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      background: "linear-gradient(135deg, #0A1628 0%, #1C0E06 50%, #0A1628 100%)",
+      zIndex: 9999
+    }}>
+      {/* Blurred background glow */}
+      <div style={{
+        position: "absolute",
+        width: "400px", height: "400px",
+        background: "radial-gradient(circle, rgba(224,123,57,0.3) 0%, rgba(37,99,235,0.2) 50%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(60px)",
+        animation: "pulse 2s ease-in-out infinite"
+      }}/>
+
+      {/* Logo */}
+      <div style={{
+        display: "flex", flexDirection: "column",
+        alignItems: "center", gap: "20px",
+        zIndex: 1, animation: "fadeIn 0.8s ease-in"
+      }}>
+        {/* Q Logo */}
+        <div style={{
+          width: "90px", height: "90px",
+          borderRadius: "24px",
+          background: "linear-gradient(135deg, #2563EB, #E07B39)",
+          display: "flex", alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "900", fontSize: "52px",
+          color: "white", fontFamily: "Georgia, serif",
+          boxShadow: "0 20px 60px rgba(37,99,235,0.4), 0 0 40px rgba(224,123,57,0.3)"
+        }}>Q</div>
+
+        {/* Brand name */}
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            fontWeight: "800", fontSize: "36px",
+            color: "white", letterSpacing: "-1px",
+            fontFamily: "'Inter', system-ui, sans-serif"
+          }}>
+            Compli<span style={{ color: "#E07B39" }}>Q</span>
+          </div>
+          <div style={{
+            fontSize: "13px", color: "#64748B",
+            letterSpacing: "3px", textTransform: "uppercase",
+            marginTop: "6px"
+          }}>
+            Compliance, Simplified.
+          </div>
+        </div>
+
+        {/* Loading dots */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{
+              width: "8px", height: "8px",
+              borderRadius: "50%",
+              background: i === 0 ? "#2563EB" : i === 1 ? "#E07B39" : "#2563EB",
+              animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`
+            }}/>
+          ))}
+        </div>
+      </div>
+
+      {/* CSS animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 0.7; }
+          50% { transform: scale(1.2); opacity: 1; }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); opacity: 0.4; }
+          50% { transform: translateY(-10px); opacity: 1; }
+        }
+        @keyframes fadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 const API_URL = "http://127.0.0.1:8000";
 
 function Logo() {
@@ -26,6 +118,7 @@ function Logo() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
@@ -39,6 +132,13 @@ export default function App() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) return <SplashScreen />;
 
   const handleUpload = async () => {
     if (!file) return;
